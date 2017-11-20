@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+           http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+<!-- CamelContext with the twitter websocket example -->
+<camelContext id="camel-twitter-sample" xmlns="http://camel.apache.org/schema/blueprint">
+
+<!-- use properties files for twitter codes -->
+    <propertyPlaceholder id="placeholder" location="classpath:twitter.properties"/>
+
+
+<!-- API to see user timeline "View My Timeline" -->
+<route id="timeline-user">
+    <from uri="twitter://timeline/user?user=pr3dator6&amp;type=polling&amp;delay=600000&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+<to uri="log:tweet"/>      
+ <to uri="websocket://localhost:9090/timeline-user?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route> 
+  
+<!--API to view user home page "View User Home" -->
+
+<route id="timeline-home">
+    <from uri="twitter://timeline/home?type=polling&amp;delay=6000000&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+    <to uri="log:tweet"/>
+    <to uri="websocket://localhost:9090/timeline-home?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+
+<!--API to send directMessage to a twitter user  "Send Message" -->
+<route id="tweet-directmessage">
+<from uri="websocket://localhost:9090/tweet-directmessage" />
+<to uri="log:tweet"/>
+<to uri="twitter://directmessage?user=pr3dator6&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+</route>
+
+<!-- API to search dynamically using Camel Twitter Keywords-->
+<route id="tweet-dynamic">
+<from uri="websocket://localhost:9090/tweet-dynamic" />
+<setHeader headerName="CamelTwitterKeywords">
+<header>msg</header>
+</setHeader>
+<to uri="twitter://search?keywords=${body}&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+<to uri="log:tweet"/>
+<to uri="websocket://localhost:9090/search-result?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+
+<!-- API to post a tweet to user timeline  "Tweet Now"-->
+<route id="tweet-timeline">
+<from uri="websocket://localhost:9090/tweet-timeline" />
+<to uri="log:tweet"/>
+<to uri="twitter://timeline/user?accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+</route>
+
+<!--API to search a tweet (polling) with keyword " Top News" -->
+<route id="twitter-search">
+	<from uri="twitter://search?type=polling&amp;keywords=news&amp;delay=6000&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+	<to uri="websocket://localhost:9090/twitter-search?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+<!--API to view all your retweets "My Retweets"-->
+<route id="retweets-of-me">
+    <from uri="twitter://timeline/retweetsofme?type=polling&amp;delay=60000&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+    <to uri="log:tweet"/>
+    <to uri="websocket://localhost:9090/retweetsofme?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+<!-- API for Streaming a sample "Streaming Sample" -->
+<route id="streaming-sample">
+    <from uri="twitter://streaming/sample?type=polling&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+    <to uri="log:tweet"/>
+    <to uri="websocket://localhost:9090/streaming-sample?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+
+<!--API for Streaming with filter "Streaming Filter" -->
+<route id="streaming-filter">
+    <from uri="twitter://streaming/filter?type=polling&amp;keywords=tesla&amp;accessToken={{access.token}}&amp;accessTokenSecret={{access.token-secret}}&amp;consumerKey={{consumer.key}}&amp;consumerSecret={{consumer.secret}}"/>
+    <to uri="log:tweet"/>
+    <to uri="websocket://localhost:9090/streaming-filter?sendToAll=true&amp;staticResources=classpath:webapp"/>
+</route>
+
+</camelContext>
+</blueprint>

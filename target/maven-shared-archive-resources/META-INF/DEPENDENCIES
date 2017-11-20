@@ -1,0 +1,17 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Camel :: Example :: Twitter WebSocket using OSGi Blueprint
+
+
+From: 'Oracle Corporation' (http://www.oracle.com/)
+  - Old JAXB Core (http://jaxb.java.net/jaxb-bundles/jaxb-core) com.sun.xml.bind:jaxb-core:jar:2.2.11
+    License: CDDL+GPL License  (http://glassfish.java.net/public/CDDL+GPL_1_1.html)
+  - Old JAXB Runtime (http://jaxb.java.net/jaxb-bundles/jaxb-impl) com.sun.xml.bind:jaxb-impl:jar:2.2.11
+    License: CDDL+GPL License  (http://glassfish.java.net/public/CDDL+GPL_1_1.html)
+
+
+
+
