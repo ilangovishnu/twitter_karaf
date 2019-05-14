@@ -40,4 +40,8 @@ To view logs:
 
 To view deploy status:
  list
+ 
+ 
+ ![](https://i.imgur.com/f543Caf.png)
+
 
